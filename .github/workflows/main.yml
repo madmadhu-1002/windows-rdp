@@ -98,35 +98,6 @@ jobs:
           }
           Write-Host "TCP connectivity successful!"
 
-      # ===== AnyDesk: install, give all permissions, show ID =====
-      - name: Install and Configure AnyDesk
-        run: |
-          $adUrl = "https://download.anydesk.com/AnyDesk.exe"
-          $installPath = "C:\Program Files (x86)\AnyDesk"
-          $adExe = Join-Path $installPath "AnyDesk.exe"
-      
-          if (-not (Test-Path $installPath)) {
-            New-Item -Path $installPath -ItemType Directory | Out-Null
-          }
-      
-          $tmpAd = "$env:TEMP\AnyDesk.exe"
-          Invoke-WebRequest -Uri $adUrl -OutFile $tmpAd
-      
-          Start-Process -FilePath $tmpAd -ArgumentList "--install `"$installPath`" --silent --start-with-win --create-shortcuts=0" -Wait
-          Remove-Item $tmpAd -Force
-      
-          Start-Sleep -Seconds 10
-      
-          $anydeskId = & "$adExe" --get-id
-          $anydeskId = $anydeskId.Trim()
-          if (-not $anydeskId) {
-            Write-Error "Failed to obtain AnyDesk ID"
-            exit 1
-          }
-      
-          echo "ANYDESK_ID=$anydeskId" >> $env:GITHUB_ENV
-          Write-Host "AnyDesk ID: $anydeskId"
-
 
       - name: Maintain Connection
         run: |
